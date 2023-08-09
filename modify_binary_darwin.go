@@ -1,10 +1,13 @@
 package gomonkey
 
-import "syscall"
+import (
+	"syscall"
+	"time"
+)
 
 func modifyBinary(target uintptr, bytes []byte) {
 	function := entryAddress(target, len(bytes))
-	err := mprotectCrossPage(target, len(bytes), syscall.PROT_READ|syscall.PROT_WRITE|syscall.PROT_EXEC)
+	err := mprotectCrossPage(target, len(bytes), syscall.PROT_READ|syscall.PROT_WRITE)
 	if err != nil {
 		panic(err)
 	}
@@ -13,6 +16,7 @@ func modifyBinary(target uintptr, bytes []byte) {
 	if err != nil {
 		panic(err)
 	}
+	time.Sleep(time.Millisecond)
 }
 
 func mprotectCrossPage(addr uintptr, length int, prot int) error {
